@@ -1,56 +1,58 @@
-<Page x:Class="Anugana.Rag.Presentation.MainPage"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:local="using:Anugana.Rag.Presentation"
-      xmlns:utu="using:Uno.Toolkit.UI"
-      NavigationCacheMode="Required"
-      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+﻿<Page
+    x:Class="Anugana.Rag.Presentation.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Anugana.Rag.Presentation"
+    xmlns:utu="using:Uno.Toolkit.UI"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    NavigationCacheMode="Required">
 
-  <Grid utu:SafeArea.Insets="VisibleBounds">
-    <Grid.RowDefinitions>
-      <RowDefinition Height="*" />
-      <RowDefinition Height="Auto" />
-    </Grid.RowDefinitions>
+    <Grid utu:SafeArea.Insets="VisibleBounds">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-    <!-- Main Views Container -->
-    <Grid Grid.Row="0">
-      <Grid x:Name="ChatPageContainer" Visibility="Visible">
-        <local:ChatPage DataContext="{Binding ChatVm}" />
-      </Grid>
-      <Grid x:Name="IngestionPageContainer" Visibility="Collapsed">
-        <local:IngestionPage DataContext="{Binding IngestionVm}" />
-      </Grid>
-      <Grid x:Name="SettingsPageContainer" Visibility="Collapsed">
-        <local:SettingsPage DataContext="{Binding SettingsVm}" />
-      </Grid>
+        <!--  Main Views Container  -->
+        <Grid Grid.Row="0">
+            <Grid x:Name="ChatPageContainer" Visibility="Visible">
+                <local:ChatPage DataContext="{Binding ChatVm}" />
+            </Grid>
+            <Grid x:Name="IngestionPageContainer" Visibility="Collapsed">
+                <local:IngestionPage DataContext="{Binding IngestionVm}" />
+            </Grid>
+            <Grid x:Name="SettingsPageContainer" Visibility="Collapsed">
+                <local:SettingsPage DataContext="{Binding SettingsVm}" />
+            </Grid>
+        </Grid>
+
+        <!--  Bottom Navigation TabBar (Uno Toolkit)  -->
+        <utu:TabBar
+            x:Name="BottomTabBar"
+            Grid.Row="1"
+            Padding="0,6,0,6"
+            HorizontalAlignment="Stretch"
+            utu:SafeArea.Insets="Bottom"
+            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0"
+            SelectedIndex="0"
+            SelectionChanged="BottomTabBar_SelectionChanged">
+            <utu:TabBarItem Padding="0,4,0,0" Content="Chat">
+                <utu:TabBarItem.Icon>
+                    <FontIcon Glyph="&#xE8BD;" />
+                </utu:TabBarItem.Icon>
+            </utu:TabBarItem>
+            <utu:TabBarItem Padding="0,4,0,0" Content="Knowledge Base">
+                <utu:TabBarItem.Icon>
+                    <FontIcon Glyph="&#xE8E5;" />
+                </utu:TabBarItem.Icon>
+            </utu:TabBarItem>
+            <utu:TabBarItem Padding="0,4,0,0" Content="Settings">
+                <utu:TabBarItem.Icon>
+                    <FontIcon Glyph="&#xE713;" />
+                </utu:TabBarItem.Icon>
+            </utu:TabBarItem>
+        </utu:TabBar>
     </Grid>
-
-    <!-- Bottom Navigation TabBar (Uno Toolkit) -->
-    <utu:TabBar x:Name="BottomTabBar"
-                Grid.Row="1"
-                utu:SafeArea.Insets="Bottom"
-                SelectedIndex="0"
-                SelectionChanged="BottomTabBar_SelectionChanged"
-                HorizontalAlignment="Stretch"
-                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                BorderThickness="0,1,0,0"
-                Padding="0,6,0,6">
-      <utu:TabBarItem Content="Chat">
-        <utu:TabBarItem.Icon>
-          <FontIcon Glyph="&#xE8BD;" />
-        </utu:TabBarItem.Icon>
-      </utu:TabBarItem>
-      <utu:TabBarItem Content="Knowledge Base">
-        <utu:TabBarItem.Icon>
-          <FontIcon Glyph="&#xE8E5;" />
-        </utu:TabBarItem.Icon>
-      </utu:TabBarItem>
-      <utu:TabBarItem Content="Settings">
-        <utu:TabBarItem.Icon>
-          <FontIcon Glyph="&#xE713;" />
-        </utu:TabBarItem.Icon>
-      </utu:TabBarItem>
-    </utu:TabBar>
-  </Grid>
 </Page>
