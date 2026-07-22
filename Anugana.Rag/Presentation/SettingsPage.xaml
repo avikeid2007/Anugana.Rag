@@ -1,0 +1,119 @@
+<Page x:Class="Anugana.Rag.Presentation.SettingsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:Anugana.Rag.Presentation"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+  <ScrollViewer IsTabStop="True">
+    <Grid utu:SafeArea.Insets="VisibleBounds" RowSpacing="14" Padding="14">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+
+      <!-- Header -->
+      <StackPanel Grid.Row="0">
+        <TextBlock Text="⚙️ RAG System Settings" FontSize="20" FontWeight="Bold" />
+        <TextBlock Text="Configure Theme, Vector Database, AI Providers, Models, and Search Parameters" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" FontSize="12" />
+      </StackPanel>
+
+      <!-- App Theme / Appearance Configuration -->
+      <Border Grid.Row="1" CornerRadius="12" Padding="16" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+        <StackPanel Spacing="10">
+          <TextBlock Text="App Theme &amp; Appearance" FontWeight="SemiBold" FontSize="15" />
+          <TextBlock Text="Choose your preferred color theme for mobile and desktop displays." Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" FontSize="12" />
+
+          <Grid ColumnSpacing="8" Margin="0,4,0,0">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0"
+                    Content="☀️ Light"
+                    Command="{Binding SetThemeCommand}" CommandParameter="Light"
+                    HorizontalAlignment="Stretch" Padding="0,10" CornerRadius="6" />
+
+            <Button Grid.Column="1"
+                    Content="🌙 Dark"
+                    Command="{Binding SetThemeCommand}" CommandParameter="Dark"
+                    HorizontalAlignment="Stretch" Padding="0,10" CornerRadius="6" />
+
+            <Button Grid.Column="2"
+                    Content="💻 System"
+                    Command="{Binding SetThemeCommand}" CommandParameter="System"
+                    HorizontalAlignment="Stretch" Padding="0,10" CornerRadius="6" />
+          </Grid>
+        </StackPanel>
+      </Border>
+
+      <!-- Vector DB Configuration -->
+      <Border Grid.Row="2" CornerRadius="12" Padding="16" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+        <StackPanel Spacing="10">
+          <TextBlock Text="Vector Database Setup (Qdrant / REST)" FontWeight="SemiBold" FontSize="15" />
+          
+          <TextBox Header="Qdrant Endpoint URL" Text="{Binding Settings.QdrantEndpoint, Mode=TwoWay}" PlaceholderText="http://localhost:6334" CornerRadius="6" />
+          <PasswordBox Header="Qdrant API Key (Optional)" Password="{Binding Settings.QdrantApiKey, Mode=TwoWay}" CornerRadius="6" />
+          <TextBox Header="Collection Name" Text="{Binding Settings.CollectionName, Mode=TwoWay}" CornerRadius="6" />
+
+          <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,4,0,0">
+            <Button Content="Test Vector DB Connection" Command="{Binding TestVectorDbCommand}" CornerRadius="6" />
+            <TextBlock Text="{Binding DbConnectionStatus}" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="13" Foreground="{ThemeResource SystemControlHighlightAccentBrush}" />
+          </StackPanel>
+        </StackPanel>
+      </Border>
+
+      <!-- AI Provider & OpenRouter Configuration -->
+      <Border Grid.Row="3" CornerRadius="12" Padding="16" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+        <StackPanel Spacing="10">
+          <TextBlock Text="AI Provider Setup (OpenRouter / Ollama)" FontWeight="SemiBold" FontSize="15" />
+          
+          <PasswordBox Header="OpenRouter API Key" Password="{Binding Settings.OpenRouterApiKey, Mode=TwoWay}" CornerRadius="6" />
+          <TextBox Header="Base Endpoint URL" Text="{Binding Settings.OpenRouterBaseUrl, Mode=TwoWay}" CornerRadius="6" />
+          <TextBox Header="Chat Model ID" Text="{Binding Settings.ChatModel, Mode=TwoWay}" PlaceholderText="meta-llama/llama-3.3-70b-instruct" CornerRadius="6" />
+          <TextBox Header="Embedding Model ID" Text="{Binding Settings.EmbeddingModel, Mode=TwoWay}" PlaceholderText="openai/text-embedding-3-small" CornerRadius="6" />
+
+          <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,4,0,0">
+            <Button Content="Test AI Connection" Command="{Binding TestLlmCommand}" CornerRadius="6" />
+            <TextBlock Text="{Binding LlmConnectionStatus}" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="13" Foreground="{ThemeResource SystemControlHighlightAccentBrush}" />
+          </StackPanel>
+        </StackPanel>
+      </Border>
+
+      <!-- RAG Search Parameters (Mobile Responsive 2x2 Grid) -->
+      <Border Grid.Row="4" CornerRadius="12" Padding="16" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+        <StackPanel Spacing="10">
+          <TextBlock Text="RAG Search Parameters" FontWeight="SemiBold" FontSize="15" />
+
+          <Grid ColumnSpacing="10" RowSpacing="10">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBox Grid.Row="0" Grid.Column="0" Header="Chunk Size" Text="{Binding Settings.ChunkSize, Mode=TwoWay}" CornerRadius="6" />
+            <TextBox Grid.Row="0" Grid.Column="1" Header="Overlap" Text="{Binding Settings.ChunkOverlap, Mode=TwoWay}" CornerRadius="6" />
+            <TextBox Grid.Row="1" Grid.Column="0" Header="Top-K Results" Text="{Binding Settings.TopK, Mode=TwoWay}" CornerRadius="6" />
+            <TextBox Grid.Row="1" Grid.Column="1" Header="Score Threshold" Text="{Binding Settings.ScoreThreshold, Mode=TwoWay}" CornerRadius="6" />
+          </Grid>
+
+          <TextBox Header="System Prompt Template" Text="{Binding Settings.SystemPrompt, Mode=TwoWay}" AcceptsReturn="True" TextWrapping="Wrap" Height="80" CornerRadius="6" />
+        </StackPanel>
+      </Border>
+
+      <!-- Save Settings Button -->
+      <Button Grid.Row="5" Content="💾 Save Settings" Command="{Binding SaveSettingsCommand}" Background="{ThemeResource SystemControlHighlightAccentBrush}" Foreground="White" FontWeight="SemiBold" HorizontalAlignment="Stretch" Padding="0,12" CornerRadius="8" />
+
+    </Grid>
+  </ScrollViewer>
+</Page>

@@ -1,0 +1,10 @@
+{
+  "background_color": "#ffffff",
+  "description": "Anugana.Rag",
+  "display": "standalone",
+  "name": "Anugana.Rag",
+  "short_name": "Anugana.Rag",
+  "start_url": "/index.html",
+  "theme_color": "#ffffff",
+  "scope": "/"
+}
