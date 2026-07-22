@@ -200,7 +200,7 @@ jobs:
         shell: bash
         run: |
           echo "=== WASM output directory ==="
-          find ./publish/wasm -maxdepth 3 -type f | head -40
+          find ./publish/wasm -maxdepth 3 -type f | head -40 || true
 
       - name: Fix Base Href & Enable GitHub Pages (.nojekyll)
         run: |
