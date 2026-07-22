@@ -1,0 +1,184 @@
+name: Build & Release Artifacts
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: '10.0.x'
+  PROJECT_PATH: 'Anugana.Rag/Anugana.Rag.csproj'
+
+jobs:
+  # ─── 1. Build Windows Standalone Executable (.exe) ─────────────────────────
+  build-windows-exe:
+    name: Build Windows Standalone EXE
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore Dependencies
+        run: dotnet restore ${{ env.PROJECT_PATH }} -p:TargetFrameworks=net10.0-desktop
+
+      - name: Publish Windows Single-File EXE
+        run: >
+          dotnet publish ${{ env.PROJECT_PATH }}
+          -f net10.0-desktop
+          -c Release
+          -r win-x64
+          --self-contained true
+          -p:PublishSingleFile=true
+          -p:EnableCompressionInSingleFile=true
+          -o ./publish/windows-exe
+
+      - name: Upload Windows EXE Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Anugana.Rag-Windows-Standalone.exe
+          path: ./publish/windows-exe/Anugana.Rag.exe
+
+  # ─── 2. Build Windows Native MSIX Package (.msix) ──────────────────────────
+  build-windows-msix:
+    name: Build Windows MSIX Package
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Restore Dependencies
+        run: dotnet restore ${{ env.PROJECT_PATH }} -p:TargetFrameworks=net10.0-windows10.0.26100
+
+      - name: Build MSIX Package
+        shell: pwsh
+        run: >
+          msbuild ${{ env.PROJECT_PATH }}
+          /p:Configuration=Release
+          /p:TargetFramework=net10.0-windows10.0.26100
+          /p:AppxPackageSigningEnabled=false
+          /p:GenerateAppInstallerFile=false
+          /p:AppxPackageDir="${{ github.workspace }}/publish/msix/"
+          /p:UapAppxPackageBuildMode=SideloadOnly
+
+      - name: Upload MSIX Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Anugana.Rag-Windows-Setup.msix
+          path: ./publish/msix/*/*.msix
+
+  # ─── 3. Build Android APK (.apk) ───────────────────────────────────────────
+  build-android-apk:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install Android Workload
+        run: dotnet workload install android
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Restore & Publish Android APK
+        run: >
+          dotnet publish ${{ env.PROJECT_PATH }}
+          -f net10.0-android
+          -c Release
+          -o ./publish/android
+
+      - name: Upload Android APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Anugana.Rag-Android.apk
+          path: ./publish/android/*-Signed.apk
+
+  # ─── 4. Build WebAssembly Static Distribution ──────────────────────────────
+  build-webassembly:
+    name: Build WebAssembly Web App
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install WASM Workload
+        run: dotnet workload install wasm-tools
+
+      - name: Publish WASM Web Distribution
+        run: >
+          dotnet publish ${{ env.PROJECT_PATH }}
+          -f net10.0-browserwasm
+          -c Release
+          -o ./publish/wasm/wwwroot
+
+      - name: Zip WASM Output
+        shell: bash
+        run: cd ./publish/wasm/wwwroot && zip -r ../../../Anugana.Rag-WebAssembly.zip .
+
+      - name: Upload WASM Zip Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Anugana.Rag-WebAssembly.zip
+          path: Anugana.Rag-WebAssembly.zip
+
+  # ─── 5. Create GitHub Release & Attach All Binaries ───────────────────────
+  publish-release:
+    name: Publish GitHub Release
+    needs: [build-windows-exe, build-windows-msix, build-android-apk, build-webassembly]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Download All Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./release-artifacts
+
+      - name: Prepare Release Package Files
+        run: |
+          mkdir -p ./final-release
+          find ./release-artifacts -type f \( -name "*.exe" -o -name "*.msix" -o -name "*.apk" -o -name "*.zip" \) -exec cp {} ./final-release/ \;
+          ls -la ./final-release/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ./final-release/*
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
