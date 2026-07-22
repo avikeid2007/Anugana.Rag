@@ -82,21 +82,37 @@ jobs:
 
       - name: Build MSIX Package
         shell: pwsh
-        run: >
-          msbuild ${{ env.PROJECT_PATH }}
-          /p:Configuration=Release
-          /p:TargetFramework=net10.0-windows10.0.26100
-          /p:AppxPackageSigningEnabled=false
-          /p:GenerateAppInstallerFile=false
-          /p:AppxPackageDir="${{ github.workspace }}\publish\msix\"
-          /p:UapAppxPackageBuildMode=SideloadOnly
-          /p:AppxBundle=Always
+        run: |
+          $PackageDir = "${{ github.workspace }}\publish\msix\"
+          & msbuild ${{ env.PROJECT_PATH }} `
+            /p:Configuration=Release `
+            /p:TargetFramework=net10.0-windows10.0.26100 `
+            /p:AppxPackageSigningEnabled=false `
+            /p:GenerateAppInstallerFile=false `
+            /p:AppxPackageDir="$PackageDir" `
+            /p:UapAppxPackageBuildMode=SideloadOnly
+
+      - name: List MSIX Output Directory
+        shell: pwsh
+        run: |
+          Write-Host "=== MSIX output directory contents ==="
+          if (Test-Path "./publish/msix") {
+            Get-ChildItem -Recurse "./publish/msix" | Select-Object FullName, Length
+          } else {
+            Write-Host "publish/msix directory NOT found"
+            Write-Host "=== Searching workspace for *.msix / *.msixbundle ==="
+            Get-ChildItem -Recurse "${{ github.workspace }}" -Include "*.msix","*.msixbundle","*.appx","*.appxbundle" -ErrorAction SilentlyContinue | Select-Object FullName
+          }
 
       - name: Upload MSIX Package Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Anugana.Rag-Windows-MSIX
-          path: ./publish/msix/**/*
+          path: |
+            ./publish/msix/**/*.msix
+            ./publish/msix/**/*.msixbundle
+            ./publish/msix/**/*.appx
+            ./publish/msix/**/*.appxbundle
 
   # ─── 3. Build Android APK (.apk) & App Bundle (.aab) ───────────────────────
   build-android:
@@ -178,12 +194,18 @@ jobs:
           -f net10.0-browserwasm
           -c Release
           -p:TargetFrameworks=net10.0-browserwasm
-          -o ./publish/wasm/wwwroot
+          -o ./publish/wasm
+
+      - name: List WASM Output Directory (Diagnostics)
+        shell: bash
+        run: |
+          echo "=== WASM output directory ==="
+          find ./publish/wasm -maxdepth 3 -type f | head -40
 
       - name: Fix Base Href & Enable GitHub Pages (.nojekyll)
         run: |
           touch ./publish/wasm/wwwroot/.nojekyll
-          sed -i 's/<base href="\/" \/>/<base href=".\/" \/>/g' ./publish/wasm/wwwroot/index.html || true
+          sed -i 's|<base href="/" />|<base href="./" />|g' ./publish/wasm/wwwroot/index.html || true
 
       - name: Deploy Live Web App to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
