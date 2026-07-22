@@ -9,6 +9,10 @@ on:
       - 'v*'
   workflow_dispatch:
 
+permissions:
+  contents: write
+  packages: write
+
 env:
   DOTNET_VERSION: '10.0.x'
   PROJECT_PATH: 'Anugana.Rag/Anugana.Rag.csproj'
