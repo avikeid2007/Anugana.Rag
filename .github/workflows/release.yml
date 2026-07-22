@@ -28,6 +28,9 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
+      - name: Restore Workloads
+        run: dotnet workload restore ${{ env.PROJECT_PATH }} || true
+
       - name: Restore Dependencies
         run: dotnet restore ${{ env.PROJECT_PATH }} -p:TargetFrameworks=net10.0-desktop
 
@@ -38,6 +41,7 @@ jobs:
           -c Release
           -r win-x64
           --self-contained true
+          -p:TargetFrameworks=net10.0-desktop
           -p:PublishSingleFile=true
           -p:EnableCompressionInSingleFile=true
           -o ./publish/windows-exe
@@ -65,6 +69,9 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
+      - name: Restore Workloads
+        run: dotnet workload restore ${{ env.PROJECT_PATH }} || true
+
       - name: Restore Dependencies
         run: dotnet restore ${{ env.PROJECT_PATH }} -p:TargetFrameworks=net10.0-windows10.0.26100
 
@@ -74,6 +81,7 @@ jobs:
           msbuild ${{ env.PROJECT_PATH }}
           /p:Configuration=Release
           /p:TargetFramework=net10.0-windows10.0.26100
+          /p:TargetFrameworks=net10.0-windows10.0.26100
           /p:AppxPackageSigningEnabled=false
           /p:GenerateAppInstallerFile=false
           /p:AppxPackageDir="${{ github.workspace }}/publish/msix/"
@@ -99,20 +107,23 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Install Android Workload
-        run: dotnet workload install android
-
       - name: Setup Java JDK
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Install Android Workload
+        run: |
+          dotnet workload install android
+          dotnet workload restore ${{ env.PROJECT_PATH }} || true
+
       - name: Restore & Publish Android APK
         run: >
           dotnet publish ${{ env.PROJECT_PATH }}
           -f net10.0-android
           -c Release
+          -p:TargetFrameworks=net10.0-android
           -o ./publish/android
 
       - name: Upload Android APK Artifact
@@ -136,13 +147,16 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Install WASM Workload
-        run: dotnet workload install wasm-tools
+        run: |
+          dotnet workload install wasm-tools
+          dotnet workload restore ${{ env.PROJECT_PATH }} || true
 
       - name: Publish WASM Web Distribution
         run: >
           dotnet publish ${{ env.PROJECT_PATH }}
           -f net10.0-browserwasm
           -c Release
+          -p:TargetFrameworks=net10.0-browserwasm
           -o ./publish/wasm/wwwroot
 
       - name: Zip WASM Output
