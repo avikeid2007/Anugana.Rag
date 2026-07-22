@@ -4,6 +4,15 @@
   <img src="Anugana.Rag/Assets/Icons/icon_foreground.svg" width="128" height="128" alt="Anugana.Rag Logo" />
   <h3>Cross-Platform Retrieval-Augmented Generation (RAG) AI Assistant</h3>
   <p>Powered by <b>Uno Platform</b>, <b>.NET 10</b>, <b>Qdrant Vector Database</b>, and <b>OpenRouter AI</b>.</p>
+
+  <p>
+    <a href="https://github.com/avikeid2007/Anugana/actions"><img src="https://img.shields.io/github/actions/workflow/status/avikeid2007/Anugana/release.yml?style=for-the-badge&amp;logo=github&amp;label=Build%20Status" alt="Build Status" /></a>
+    <a href="https://platform.uno"><img src="https://img.shields.io/badge/Uno%20Platform-5.0+-7A67F8?style=for-the-badge&amp;logo=uno-platform" alt="Uno Platform" /></a>
+    <a href="https://dotnet.microsoft.com/"><img src="https://img.shields.io/badge/.NET-10.0-512BD4?style=for-the-badge&amp;logo=dotnet" alt=".NET 10" /></a>
+    <a href="https://qdrant.tech"><img src="https://img.shields.io/badge/Vector%20DB-Qdrant-D62B00?style=for-the-badge&amp;logo=qdrant" alt="Qdrant" /></a>
+    <a href="https://openrouter.ai"><img src="https://img.shields.io/badge/AI-OpenRouter-000000?style=for-the-badge" alt="OpenRouter" /></a>
+    <a href="LICENSE.txt"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License" /></a>
+  </p>
 </div>
 
 ---
