@@ -71,32 +71,32 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
       - name: Restore Workloads
         run: dotnet workload restore ${{ env.PROJECT_PATH }} || true
 
       - name: Restore Dependencies
         run: dotnet restore ${{ env.PROJECT_PATH }} -p:TargetFrameworks=net10.0-windows10.0.26100
 
-      - name: Publish MSIX Package
+      - name: Build MSIX Package
+        shell: pwsh
         run: >
-          dotnet publish ${{ env.PROJECT_PATH }}
-          -f net10.0-windows10.0.26100
-          -c Release
-          -p:TargetFrameworks=net10.0-windows10.0.26100
-          -p:AppxPackageSigningEnabled=false
-          -p:GenerateAppInstallerFile=false
-          -p:AppxPackageDir="${{ github.workspace }}/publish/msix/"
-          -p:UapAppxPackageBuildMode=SideloadOnly
+          msbuild ${{ env.PROJECT_PATH }}
+          /p:Configuration=Release
+          /p:TargetFramework=net10.0-windows10.0.26100
+          /p:AppxPackageSigningEnabled=false
+          /p:GenerateAppInstallerFile=false
+          /p:AppxPackageDir="${{ github.workspace }}\publish\msix\"
+          /p:UapAppxPackageBuildMode=SideloadOnly
+          /p:AppxBundle=Always
 
       - name: Upload MSIX Package Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Anugana.Rag-Windows-Setup.msix
-          path: |
-            ./publish/msix/**/*.msix
-            ./publish/msix/**/*.msixbundle
-            ./publish/msix/**/*.appx
-            ./publish/msix/**/*.appxbundle
+          name: Anugana.Rag-Windows-MSIX
+          path: ./publish/msix/**/*
 
   # ─── 3. Build Android APK (.apk) & App Bundle (.aab) ───────────────────────
   build-android:
@@ -180,8 +180,10 @@ jobs:
           -p:TargetFrameworks=net10.0-browserwasm
           -o ./publish/wasm/wwwroot
 
-      - name: Enable GitHub Pages (.nojekyll)
-        run: touch ./publish/wasm/wwwroot/.nojekyll
+      - name: Fix Base Href & Enable GitHub Pages (.nojekyll)
+        run: |
+          touch ./publish/wasm/wwwroot/.nojekyll
+          sed -i 's/<base href="\/" \/>/<base href=".\/" \/>/g' ./publish/wasm/wwwroot/index.html || true
 
       - name: Deploy Live Web App to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
@@ -189,6 +191,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./publish/wasm/wwwroot
+          force_orphan: true
 
       - name: Zip WASM Output
         shell: bash
