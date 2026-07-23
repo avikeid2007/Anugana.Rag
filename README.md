@@ -152,6 +152,7 @@ GitHub Actions automatically builds and publishes native binaries for every rele
 
 ---
 
-## 📄 License
+## 📄 License & Privacy
 
-This project is licensed under the MIT License - see the [LICENSE.txt](LICENSE.txt) file for details.
+- **License**: This project is licensed under the MIT License - see the [LICENSE.txt](LICENSE.txt) file for details.
+- **Privacy Policy**: Read our [Privacy Policy](PRIVACY_POLICY.md) for details on local data storage and API communications.
