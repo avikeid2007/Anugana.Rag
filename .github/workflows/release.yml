@@ -139,23 +139,56 @@ jobs:
           dotnet workload install android
           dotnet workload restore ${{ env.PROJECT_PATH }} || true
 
+      - name: Decode Android Release Keystore (if secret provided)
+        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > ${{ github.workspace }}/release.keystore
+
       - name: Restore & Publish Android APK
-        run: >
-          dotnet publish ${{ env.PROJECT_PATH }}
-          -f net10.0-android
-          -c Release
-          -p:TargetFrameworks=net10.0-android
-          -p:AndroidPackageFormat=apk
-          -o ./publish/android-apk
+        run: |
+          if [ -n "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ]; then
+            dotnet publish ${{ env.PROJECT_PATH }} \
+              -f net10.0-android \
+              -c Release \
+              -p:TargetFrameworks=net10.0-android \
+              -p:AndroidPackageFormat=apk \
+              -p:AndroidKeyStore=true \
+              -p:AndroidSigningKeyStore=${{ github.workspace }}/release.keystore \
+              -p:AndroidSigningStorePass="${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
+              -p:AndroidSigningKeyAlias="${{ secrets.ANDROID_KEY_ALIAS }}" \
+              -p:AndroidSigningKeyPass="${{ secrets.ANDROID_KEY_PASSWORD }}" \
+              -o ./publish/android-apk
+          else
+            dotnet publish ${{ env.PROJECT_PATH }} \
+              -f net10.0-android \
+              -c Release \
+              -p:TargetFrameworks=net10.0-android \
+              -p:AndroidPackageFormat=apk \
+              -o ./publish/android-apk
+          fi
 
       - name: Restore & Publish Android AAB (Play Store Bundle)
-        run: >
-          dotnet publish ${{ env.PROJECT_PATH }}
-          -f net10.0-android
-          -c Release
-          -p:TargetFrameworks=net10.0-android
-          -p:AndroidPackageFormat=aab
-          -o ./publish/android-aab
+        run: |
+          if [ -n "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ]; then
+            dotnet publish ${{ env.PROJECT_PATH }} \
+              -f net10.0-android \
+              -c Release \
+              -p:TargetFrameworks=net10.0-android \
+              -p:AndroidPackageFormat=aab \
+              -p:AndroidKeyStore=true \
+              -p:AndroidSigningKeyStore=${{ github.workspace }}/release.keystore \
+              -p:AndroidSigningStorePass="${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
+              -p:AndroidSigningKeyAlias="${{ secrets.ANDROID_KEY_ALIAS }}" \
+              -p:AndroidSigningKeyPass="${{ secrets.ANDROID_KEY_PASSWORD }}" \
+              -o ./publish/android-aab
+          else
+            dotnet publish ${{ env.PROJECT_PATH }} \
+              -f net10.0-android \
+              -c Release \
+              -p:TargetFrameworks=net10.0-android \
+              -p:AndroidPackageFormat=aab \
+              -o ./publish/android-aab
+          fi
 
       - name: Upload Android APK Artifact
         uses: actions/upload-artifact@v4
