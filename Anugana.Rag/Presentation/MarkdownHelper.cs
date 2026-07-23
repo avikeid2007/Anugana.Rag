@@ -41,6 +41,21 @@ public static class MarkdownHelper
     {
         richTextBlock.Blocks.Clear();
 
+        // Ensure RichTextBlock has an explicit Foreground if none was set
+        if (richTextBlock.Foreground == null)
+        {
+            if (Application.Current.Resources.TryGetValue("ApplicationForegroundThemeBrush", out var appFg) && appFg is Brush appFgBrush)
+            {
+                richTextBlock.Foreground = appFgBrush;
+            }
+            else if (Application.Current.Resources.TryGetValue("SystemControlPageTextBaseHighBrush", out var sysFg) && sysFg is Brush sysFgBrush)
+            {
+                richTextBlock.Foreground = sysFgBrush;
+            }
+        }
+
+        var defaultForeground = richTextBlock.Foreground;
+
         if (string.IsNullOrEmpty(markdown))
             return;
 
@@ -57,7 +72,7 @@ public static class MarkdownHelper
             if (match.Index > lastIndex)
             {
                 var textSegment = markdown.Substring(lastIndex, match.Index - lastIndex);
-                ProcessTextBlocks(richTextBlock, textSegment);
+                ProcessTextBlocks(richTextBlock, textSegment, defaultForeground);
             }
 
             // Process code block
@@ -84,11 +99,11 @@ public static class MarkdownHelper
         if (lastIndex < markdown.Length)
         {
             var remainingSegment = markdown.Substring(lastIndex);
-            ProcessTextBlocks(richTextBlock, remainingSegment);
+            ProcessTextBlocks(richTextBlock, remainingSegment, defaultForeground);
         }
     }
 
-    private static void ProcessTextBlocks(RichTextBlock richTextBlock, string textSegment)
+    private static void ProcessTextBlocks(RichTextBlock richTextBlock, string textSegment, Brush? defaultForeground)
     {
         var lines = textSegment.Split('\n');
         Paragraph? currentParagraph = null;
@@ -108,7 +123,7 @@ public static class MarkdownHelper
             if (trimmed.StartsWith("# "))
             {
                 var h1 = new Paragraph { Margin = new Thickness(0, 8, 0, 4) };
-                AddInlines(h1.Inlines, trimmed.Substring(2), fontSize: 18, isBold: true);
+                AddInlines(h1.Inlines, trimmed.Substring(2), defaultForeground, fontSize: 18, isBold: true);
                 richTextBlock.Blocks.Add(h1);
                 currentParagraph = null;
                 continue;
@@ -116,7 +131,7 @@ public static class MarkdownHelper
             if (trimmed.StartsWith("## "))
             {
                 var h2 = new Paragraph { Margin = new Thickness(0, 6, 0, 3) };
-                AddInlines(h2.Inlines, trimmed.Substring(3), fontSize: 16, isBold: true);
+                AddInlines(h2.Inlines, trimmed.Substring(3), defaultForeground, fontSize: 16, isBold: true);
                 richTextBlock.Blocks.Add(h2);
                 currentParagraph = null;
                 continue;
@@ -124,7 +139,7 @@ public static class MarkdownHelper
             if (trimmed.StartsWith("### "))
             {
                 var h3 = new Paragraph { Margin = new Thickness(0, 4, 0, 2) };
-                AddInlines(h3.Inlines, trimmed.Substring(4), fontSize: 14, isBold: true);
+                AddInlines(h3.Inlines, trimmed.Substring(4), defaultForeground, fontSize: 14, isBold: true);
                 richTextBlock.Blocks.Add(h3);
                 currentParagraph = null;
                 continue;
@@ -134,8 +149,10 @@ public static class MarkdownHelper
             if (trimmed.StartsWith("- ") || trimmed.StartsWith("* ") || trimmed.StartsWith("+ "))
             {
                 var listPara = new Paragraph { Margin = new Thickness(12, 2, 0, 2) };
-                listPara.Inlines.Add(new Run { Text = "• ", FontWeight = Microsoft.UI.Text.FontWeights.Bold });
-                AddInlines(listPara.Inlines, trimmed.Substring(2));
+                var bulletRun = new Run { Text = "• ", FontWeight = Microsoft.UI.Text.FontWeights.Bold };
+                if (defaultForeground != null) bulletRun.Foreground = defaultForeground;
+                listPara.Inlines.Add(bulletRun);
+                AddInlines(listPara.Inlines, trimmed.Substring(2), defaultForeground);
                 richTextBlock.Blocks.Add(listPara);
                 currentParagraph = null;
                 continue;
@@ -146,8 +163,10 @@ public static class MarkdownHelper
             if (numMatch.Success)
             {
                 var listPara = new Paragraph { Margin = new Thickness(12, 2, 0, 2) };
-                listPara.Inlines.Add(new Run { Text = $"{numMatch.Groups[1].Value}. ", FontWeight = Microsoft.UI.Text.FontWeights.Bold });
-                AddInlines(listPara.Inlines, numMatch.Groups[2].Value);
+                var numRun = new Run { Text = $"{numMatch.Groups[1].Value}. ", FontWeight = Microsoft.UI.Text.FontWeights.Bold };
+                if (defaultForeground != null) numRun.Foreground = defaultForeground;
+                listPara.Inlines.Add(numRun);
+                AddInlines(listPara.Inlines, numMatch.Groups[2].Value, defaultForeground);
                 richTextBlock.Blocks.Add(listPara);
                 currentParagraph = null;
                 continue;
@@ -165,11 +184,11 @@ public static class MarkdownHelper
                 currentParagraph.Inlines.Add(new LineBreak());
             }
 
-            AddInlines(currentParagraph.Inlines, line);
+            AddInlines(currentParagraph.Inlines, line, defaultForeground);
         }
     }
 
-    private static void AddInlines(InlineCollection inlines, string text, double? fontSize = null, bool isBold = false)
+    private static void AddInlines(InlineCollection inlines, string text, Brush? defaultForeground, double? fontSize = null, bool isBold = false)
     {
         // Tokenize inline markdown: **bold**, *italic*, `inline code`
         var tokenRegex = new Regex(@"(\*\*(.*?)\*\*|__(.*?)__|`(.*?)`|\*(.*?)\*|_(.*?)_)", RegexOptions.Compiled);
@@ -181,13 +200,13 @@ public static class MarkdownHelper
             if (match.Index > lastPos)
             {
                 var plainText = text.Substring(lastPos, match.Index - lastPos);
-                inlines.Add(CreateRun(plainText, fontSize, isBold));
+                inlines.Add(CreateRun(plainText, defaultForeground, fontSize, isBold));
             }
 
             if (match.Value.StartsWith("**") || match.Value.StartsWith("__"))
             {
                 var content = match.Groups[2].Success ? match.Groups[2].Value : match.Groups[3].Value;
-                inlines.Add(CreateRun(content, fontSize, isBold: true));
+                inlines.Add(CreateRun(content, defaultForeground, fontSize, isBold: true));
             }
             else if (match.Value.StartsWith("`"))
             {
@@ -204,7 +223,7 @@ public static class MarkdownHelper
             else if (match.Value.StartsWith("*") || match.Value.StartsWith("_"))
             {
                 var content = match.Groups[5].Success ? match.Groups[5].Value : match.Groups[6].Value;
-                var italicRun = CreateRun(content, fontSize, isBold);
+                var italicRun = CreateRun(content, defaultForeground, fontSize, isBold);
                 italicRun.FontStyle = Windows.UI.Text.FontStyle.Italic;
                 inlines.Add(italicRun);
             }
@@ -216,13 +235,14 @@ public static class MarkdownHelper
         if (lastPos < text.Length)
         {
             var remaining = text.Substring(lastPos);
-            inlines.Add(CreateRun(remaining, fontSize, isBold));
+            inlines.Add(CreateRun(remaining, defaultForeground, fontSize, isBold));
         }
     }
 
-    private static Run CreateRun(string text, double? fontSize = null, bool isBold = false)
+    private static Run CreateRun(string text, Brush? defaultForeground, double? fontSize = null, bool isBold = false)
     {
         var run = new Run { Text = text };
+        if (defaultForeground != null) run.Foreground = defaultForeground;
         if (fontSize.HasValue) run.FontSize = fontSize.Value;
         if (isBold) run.FontWeight = Microsoft.UI.Text.FontWeights.Bold;
         return run;
