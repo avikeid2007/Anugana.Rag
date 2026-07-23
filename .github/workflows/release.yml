@@ -118,6 +118,11 @@ jobs:
   build-android:
     name: Build Android APK & AAB Bundle
     runs-on: ubuntu-latest
+    env:
+      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -140,13 +145,13 @@ jobs:
           dotnet workload restore ${{ env.PROJECT_PATH }} || true
 
       - name: Decode Android Release Keystore (if secret provided)
-        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+        if: ${{ env.ANDROID_KEYSTORE_BASE64 != '' }}
         run: |
-          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > ${{ github.workspace }}/release.keystore
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > ${{ github.workspace }}/release.keystore
 
       - name: Restore & Publish Android APK
         run: |
-          if [ -n "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ]; then
+          if [ -n "$ANDROID_KEYSTORE_BASE64" ]; then
             dotnet publish ${{ env.PROJECT_PATH }} \
               -f net10.0-android \
               -c Release \
@@ -154,9 +159,9 @@ jobs:
               -p:AndroidPackageFormat=apk \
               -p:AndroidKeyStore=true \
               -p:AndroidSigningKeyStore=${{ github.workspace }}/release.keystore \
-              -p:AndroidSigningStorePass="${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
-              -p:AndroidSigningKeyAlias="${{ secrets.ANDROID_KEY_ALIAS }}" \
-              -p:AndroidSigningKeyPass="${{ secrets.ANDROID_KEY_PASSWORD }}" \
+              -p:AndroidSigningStorePass="$ANDROID_KEYSTORE_PASSWORD" \
+              -p:AndroidSigningKeyAlias="$ANDROID_KEY_ALIAS" \
+              -p:AndroidSigningKeyPass="$ANDROID_KEY_PASSWORD" \
               -o ./publish/android-apk
           else
             dotnet publish ${{ env.PROJECT_PATH }} \
@@ -169,7 +174,7 @@ jobs:
 
       - name: Restore & Publish Android AAB (Play Store Bundle)
         run: |
-          if [ -n "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ]; then
+          if [ -n "$ANDROID_KEYSTORE_BASE64" ]; then
             dotnet publish ${{ env.PROJECT_PATH }} \
               -f net10.0-android \
               -c Release \
@@ -177,9 +182,9 @@ jobs:
               -p:AndroidPackageFormat=aab \
               -p:AndroidKeyStore=true \
               -p:AndroidSigningKeyStore=${{ github.workspace }}/release.keystore \
-              -p:AndroidSigningStorePass="${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
-              -p:AndroidSigningKeyAlias="${{ secrets.ANDROID_KEY_ALIAS }}" \
-              -p:AndroidSigningKeyPass="${{ secrets.ANDROID_KEY_PASSWORD }}" \
+              -p:AndroidSigningStorePass="$ANDROID_KEYSTORE_PASSWORD" \
+              -p:AndroidSigningKeyAlias="$ANDROID_KEY_ALIAS" \
+              -p:AndroidSigningKeyPass="$ANDROID_KEY_PASSWORD" \
               -o ./publish/android-aab
           else
             dotnet publish ${{ env.PROJECT_PATH }} \
