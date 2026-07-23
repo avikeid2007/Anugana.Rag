@@ -1,0 +1,32 @@
+{
+  "background_color": "#ffffff",
+  "description": "Anugana.Rag",
+  "display": "standalone",
+  "name": "Anugana.Rag",
+  "short_name": "Anugana.Rag",
+  "start_url": "/index.html",
+  "theme_color": "#ffffff",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "package_987e72dff9c3e5a1dd46bddb594eb3f42cc9f65d/icon-16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "package_987e72dff9c3e5a1dd46bddb594eb3f42cc9f65d/icon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "package_987e72dff9c3e5a1dd46bddb594eb3f42cc9f65d/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "package_987e72dff9c3e5a1dd46bddb594eb3f42cc9f65d/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
