@@ -7,9 +7,10 @@ using Android.Widget;
 namespace Anugana.Rag.Droid;
 
 [Activity(
+    Label = "Anugana AI - Rag Assistant",
     MainLauncher = true,
     ConfigurationChanges = global::Uno.UI.ActivityHelper.AllConfigChanges,
-    WindowSoftInputMode = SoftInput.AdjustNothing | SoftInput.StateHidden
+    WindowSoftInputMode = SoftInput.AdjustResize | SoftInput.StateHidden
 )]
 public class MainActivity : Microsoft.UI.Xaml.ApplicationActivity
 {

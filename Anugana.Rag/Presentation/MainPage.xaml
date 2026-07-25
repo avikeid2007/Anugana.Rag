@@ -1,4 +1,4 @@
-﻿<Page
+<Page
     x:Class="Anugana.Rag.Presentation.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -7,7 +7,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     NavigationCacheMode="Required">
 
-    <Grid utu:SafeArea.Insets="VisibleBounds">
+    <Grid utu:SafeArea.Insets="SoftInput, VisibleBounds">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />

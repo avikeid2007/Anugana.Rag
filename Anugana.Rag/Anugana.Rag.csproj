@@ -6,7 +6,7 @@
     <UnoSingleProject>true</UnoSingleProject>
 
     <!-- Display name -->
-    <ApplicationTitle>Anugana.Rag</ApplicationTitle>
+    <ApplicationTitle>Anugana AI - Rag Assistant</ApplicationTitle>
     <!-- App Identifier -->
     <ApplicationId>com.avnishkumar.Anugana</ApplicationId>
     <!-- Versions -->
