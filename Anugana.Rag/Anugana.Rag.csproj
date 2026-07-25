@@ -45,12 +45,31 @@
       ThemeService;
       SkiaRenderer;
     </UnoFeatures>
+    <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+    <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
+    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
+    <GenerateTestArtifacts>True</GenerateTestArtifacts>
+    <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
+    <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Qdrant.Client" />
     <PackageReference Include="PdfPig" />
     <PackageReference Include="sqlite-net-pcl" />
+  </ItemGroup>
+
+  <!-- Windows MSIX store package icons (referenced by Package.appxmanifest) -->
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+    <Content Include="SplashScreen.png" />
+    <Content Include="MediumTile.png" />
+    <Content Include="AppIcon.png" />
+    <Content Include="WideTile.png" />
+    <Content Include="SmallTile.png" />
+    <Content Include="LargeTile.png" />
+    <Content Include="PackageLogo.png" />
   </ItemGroup>
 
 </Project>
