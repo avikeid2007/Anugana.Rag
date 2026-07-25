@@ -33,7 +33,7 @@ public class OpenRouterLlmService : ILlmService
             {
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", settings.OpenRouterApiKey);
             }
-            var response = await _httpClient.SendAsync(request, cancellationToken);
+            var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
             return response.IsSuccessStatusCode;
         }
         catch
@@ -85,7 +85,7 @@ public class OpenRouterLlmService : ILlmService
         string? networkErrorMsg = null;
         try
         {
-            response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -98,17 +98,19 @@ public class OpenRouterLlmService : ILlmService
             yield break;
         }
 
-        if (response != null && !response.IsSuccessStatusCode)
+        if (response == null) yield break;
+
+        if (!response.IsSuccessStatusCode)
         {
-            var errContent = await response.Content.ReadAsStringAsync(cancellationToken);
+            var errContent = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
             yield return $"⚠️ OpenRouter API Error ({(int)response.StatusCode} {response.ReasonPhrase}): {errContent}\n\nPlease check your API Key and Chat Model in Settings.";
             yield break;
         }
 
-        using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
+        using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
         using var reader = new StreamReader(stream);
 
-        while (await reader.ReadLineAsync(cancellationToken) is { } line)
+        while (await reader.ReadLineAsync(cancellationToken).ConfigureAwait(false) is { } line)
         {
             if (string.IsNullOrWhiteSpace(line)) continue;
             if (line.StartsWith("data: "))

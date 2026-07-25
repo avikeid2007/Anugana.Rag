@@ -68,7 +68,13 @@ public partial class App : Application
                 .UseLocalization()
                 .ConfigureServices((context, services) =>
                 {
+                    // On Android, use AndroidClientHandler to avoid NetworkOnMainThreadException.
+                    // Other platforms use the default SocketsHttpHandler.
+#if __ANDROID__
+                    services.AddSingleton(new System.Net.Http.HttpClient(new Xamarin.Android.Net.AndroidClientHandler()));
+#else
                     services.AddSingleton(new System.Net.Http.HttpClient());
+#endif
                     services.AddSingleton<Services.ISettingsService, Services.SettingsService>();
                     services.AddSingleton<Services.IVectorDbService, Services.QdrantVectorDbService>();
                     services.AddSingleton<Services.IEmbeddingService, Services.OpenRouterEmbeddingService>();

@@ -23,7 +23,7 @@ public class RestVectorDbService : IVectorDbService
         try
         {
             var settings = _settingsService.CurrentSettings;
-            var response = await _httpClient.GetAsync($"{settings.RestVectorDbEndpoint.TrimEnd('/')}/health", cancellationToken);
+            var response = await _httpClient.GetAsync($"{settings.RestVectorDbEndpoint.TrimEnd('/')}/health", cancellationToken).ConfigureAwait(false);
             return response.IsSuccessStatusCode;
         }
         catch
@@ -43,7 +43,7 @@ public class RestVectorDbService : IVectorDbService
         var settings = _settingsService.CurrentSettings;
         var payload = JsonSerializer.Serialize(new { collection = collectionName, chunks });
         var content = new StringContent(payload, System.Text.Encoding.UTF8, "application/json");
-        await _httpClient.PostAsync($"{settings.RestVectorDbEndpoint.TrimEnd('/')}/upsert", content, cancellationToken);
+        await _httpClient.PostAsync($"{settings.RestVectorDbEndpoint.TrimEnd('/')}/upsert", content, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<List<VectorSearchResult>> SearchSimilarAsync(
@@ -57,10 +57,10 @@ public class RestVectorDbService : IVectorDbService
         var req = JsonSerializer.Serialize(new { collection = collectionName, vector = queryVector, topK, scoreThreshold });
         var content = new StringContent(req, System.Text.Encoding.UTF8, "application/json");
 
-        var response = await _httpClient.PostAsync($"{settings.RestVectorDbEndpoint.TrimEnd('/')}/search", content, cancellationToken);
+        var response = await _httpClient.PostAsync($"{settings.RestVectorDbEndpoint.TrimEnd('/')}/search", content, cancellationToken).ConfigureAwait(false);
         if (!response.IsSuccessStatusCode) return new List<VectorSearchResult>();
 
-        var json = await response.Content.ReadAsStringAsync(cancellationToken);
+        var json = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
         var list = JsonSerializer.Deserialize<List<VectorSearchResult>>(json);
         return list ?? new List<VectorSearchResult>();
     }
@@ -70,10 +70,10 @@ public class RestVectorDbService : IVectorDbService
         try
         {
             var settings = _settingsService.CurrentSettings;
-            var response = await _httpClient.GetAsync($"{settings.RestVectorDbEndpoint.TrimEnd('/')}/stats?collection={collectionName}", cancellationToken);
+            var response = await _httpClient.GetAsync($"{settings.RestVectorDbEndpoint.TrimEnd('/')}/stats?collection={collectionName}", cancellationToken).ConfigureAwait(false);
             if (!response.IsSuccessStatusCode) return (0, "Offline");
 
-            var json = await response.Content.ReadAsStringAsync(cancellationToken);
+            var json = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
             using var doc = JsonDocument.Parse(json);
             var count = doc.RootElement.GetProperty("count").GetUInt64();
             var status = doc.RootElement.GetProperty("status").GetString() ?? "OK";

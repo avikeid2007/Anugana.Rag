@@ -1,10 +1,10 @@
-# Privacy Policy for Anugana.Rag
+# Privacy Policy for Anugana AI - Rag Chat Assistant
 
 **Last Updated:** July 23, 2026
 
 ## 1. Introduction
 
-**Anugana.Rag** ("the Application") is an open-source, cross-platform Retrieval-Augmented Generation (RAG) AI assistant application built using Uno Platform, .NET 10, Qdrant Vector Database, and OpenRouter AI. 
+**Anugana AI - Rag Chat Assistant** ("the Application") is an open-source, cross-platform Retrieval-Augmented Generation (RAG) AI assistant application built using Uno Platform, .NET 10, Qdrant Vector Database, and OpenRouter AI. 
 
 We respect your privacy and are committed to protecting your data. This Privacy Policy explains how data is handled when you use the Application.
 

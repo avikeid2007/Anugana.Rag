@@ -58,7 +58,7 @@ public partial class SettingsViewModel : ObservableObject
     private async Task TestVectorDbAsync(CancellationToken cancellationToken)
     {
         DbConnectionStatus = "Testing connection...";
-        bool ok = await _vectorDbService.TestConnectionAsync(cancellationToken);
+        bool ok = await Task.Run(async () => await _vectorDbService.TestConnectionAsync(cancellationToken).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
         DbConnectionStatus = ok ? "✅ Connection Successful!" : "❌ Connection Failed.";
     }
 
@@ -66,7 +66,7 @@ public partial class SettingsViewModel : ObservableObject
     private async Task TestLlmAsync(CancellationToken cancellationToken)
     {
         LlmConnectionStatus = "Testing connection...";
-        bool ok = await _llmService.TestConnectionAsync(cancellationToken);
+        bool ok = await Task.Run(async () => await _llmService.TestConnectionAsync(cancellationToken).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
         LlmConnectionStatus = ok ? "✅ Connection Successful!" : "❌ Connection Failed.";
     }
 }

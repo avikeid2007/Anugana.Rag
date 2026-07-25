@@ -104,7 +104,7 @@ public class QdrantVectorDbService : IVectorDbService
         try
         {
             using var client = GetGrpcClient();
-            var collections = await client.ListCollectionsAsync(cancellationToken);
+            var collections = await client.ListCollectionsAsync(cancellationToken).ConfigureAwait(false);
             return collections != null;
         }
         catch { }
@@ -115,7 +115,7 @@ public class QdrantVectorDbService : IVectorDbService
             var url = GetRestBaseUrl() + "/collections";
             using var req = new HttpRequestMessage(HttpMethod.Get, url);
             AddApiKeyHeader(req);
-            var resp = await _httpClient.SendAsync(req, cancellationToken);
+            var resp = await _httpClient.SendAsync(req, cancellationToken).ConfigureAwait(false);
             return resp.IsSuccessStatusCode;
         }
         catch
@@ -129,13 +129,13 @@ public class QdrantVectorDbService : IVectorDbService
         try
         {
             using var client = GetGrpcClient();
-            var existing = await client.ListCollectionsAsync(cancellationToken);
+            var existing = await client.ListCollectionsAsync(cancellationToken).ConfigureAwait(false);
             if (!existing.Contains(collectionName))
             {
                 await client.CreateCollectionAsync(
                     collectionName: collectionName,
                     vectorsConfig: new VectorParams { Size = vectorSize, Distance = Distance.Cosine },
-                    cancellationToken: cancellationToken);
+                    cancellationToken: cancellationToken).ConfigureAwait(false);
             }
         }
         catch
@@ -146,7 +146,7 @@ public class QdrantVectorDbService : IVectorDbService
                 var checkUrl = GetRestBaseUrl() + $"/collections/{collectionName}";
                 using var checkReq = new HttpRequestMessage(HttpMethod.Get, checkUrl);
                 AddApiKeyHeader(checkReq);
-                var checkResp = await _httpClient.SendAsync(checkReq, cancellationToken);
+                var checkResp = await _httpClient.SendAsync(checkReq, cancellationToken).ConfigureAwait(false);
 
                 if (!checkResp.IsSuccessStatusCode)
                 {
@@ -156,7 +156,7 @@ public class QdrantVectorDbService : IVectorDbService
                         Content = new StringContent(body, System.Text.Encoding.UTF8, "application/json")
                     };
                     AddApiKeyHeader(createReq);
-                    await _httpClient.SendAsync(createReq, cancellationToken);
+                    await _httpClient.SendAsync(createReq, cancellationToken).ConfigureAwait(false);
                 }
             }
             catch { }
@@ -169,7 +169,7 @@ public class QdrantVectorDbService : IVectorDbService
         if (!chunkList.Any()) return;
 
         ulong firstSize = (ulong)chunkList[0].Vector!.Length;
-        await EnsureCollectionAsync(collectionName, firstSize, cancellationToken);
+        await EnsureCollectionAsync(collectionName, firstSize, cancellationToken).ConfigureAwait(false);
 
         try
         {
@@ -192,12 +192,12 @@ public class QdrantVectorDbService : IVectorDbService
                 points.Add(point);
             }
 
-            await client.UpsertAsync(collectionName, points, cancellationToken: cancellationToken);
+            await client.UpsertAsync(collectionName, points, cancellationToken: cancellationToken).ConfigureAwait(false);
         }
         catch
         {
             // REST fallback
-            await UpsertRestAsync(collectionName, chunkList, cancellationToken);
+            await UpsertRestAsync(collectionName, chunkList, cancellationToken).ConfigureAwait(false);
         }
     }
 
@@ -229,7 +229,7 @@ public class QdrantVectorDbService : IVectorDbService
                 Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json")
             };
             AddApiKeyHeader(req);
-            await _httpClient.SendAsync(req, cancellationToken);
+            await _httpClient.SendAsync(req, cancellationToken).ConfigureAwait(false);
         }
         catch { }
     }
@@ -243,12 +243,12 @@ public class QdrantVectorDbService : IVectorDbService
         float scoreThreshold,
         CancellationToken cancellationToken = default)
     {
-        var results = await SearchRestAsync(collectionName, queryVector, topK, scoreThreshold, cancellationToken);
+        var results = await SearchRestAsync(collectionName, queryVector, topK, scoreThreshold, cancellationToken).ConfigureAwait(false);
 
         // Retry with 0.0 threshold if nothing matched
         if (results.Count == 0 && scoreThreshold > 0.0f)
         {
-            results = await SearchRestAsync(collectionName, queryVector, topK, 0.0f, cancellationToken);
+            results = await SearchRestAsync(collectionName, queryVector, topK, 0.0f, cancellationToken).ConfigureAwait(false);
         }
 
         return results;
@@ -280,10 +280,10 @@ public class QdrantVectorDbService : IVectorDbService
             };
             AddApiKeyHeader(req);
 
-            var resp = await _httpClient.SendAsync(req, cancellationToken);
+            var resp = await _httpClient.SendAsync(req, cancellationToken).ConfigureAwait(false);
             if (!resp.IsSuccessStatusCode) return new List<VectorSearchResult>();
 
-            var json = await resp.Content.ReadAsStringAsync(cancellationToken);
+            var json = await resp.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
             using var doc = JsonDocument.Parse(json);
 
             var results = new List<VectorSearchResult>();
@@ -368,11 +368,11 @@ public class QdrantVectorDbService : IVectorDbService
             var url = GetRestBaseUrl() + $"/collections/{collectionName}";
             using var req = new HttpRequestMessage(HttpMethod.Get, url);
             AddApiKeyHeader(req);
-            var resp = await _httpClient.SendAsync(req, cancellationToken);
+            var resp = await _httpClient.SendAsync(req, cancellationToken).ConfigureAwait(false);
 
             if (!resp.IsSuccessStatusCode) return (0, "Not Found");
 
-            var json = await resp.Content.ReadAsStringAsync(cancellationToken);
+            var json = await resp.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
             using var doc = JsonDocument.Parse(json);
 
             if (doc.RootElement.TryGetProperty("result", out var result))

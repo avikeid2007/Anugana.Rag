@@ -55,38 +55,42 @@ public partial class IngestionViewModel : ObservableObject
         int total = filePaths.Count;
         int successCount = 0;
 
-        for (int i = 0; i < total; i++)
+        await Task.Run(async () =>
         {
-            var path = filePaths[i];
-            if (!System.IO.File.Exists(path)) continue;
-
-            var fileName = System.IO.Path.GetFileName(path);
-            StatusMessage = $"⏳ [{i + 1}/{total}] Processing {fileName}...";
-
-            try
+            for (int i = 0; i < total; i++)
             {
-                var doc = await _documentProcessorService.ProcessFileAsync(
-                    path,
-                    (status, msg) =>
-                    {
-                        StatusMessage = $"⏳ [{i + 1}/{total}] {fileName}: {msg}";
-                    },
-                    CancellationToken.None);
+                var path = filePaths[i];
+                if (!System.IO.File.Exists(path)) continue;
 
-                Documents.Insert(0, doc);
-                if (doc.Status == DocumentStatus.Completed)
+                var fileName = System.IO.Path.GetFileName(path);
+                StatusMessage = $"⏳ [{i + 1}/{total}] Processing {fileName}...";
+
+                try
                 {
-                    successCount++;
+                    var doc = await _documentProcessorService.ProcessFileAsync(
+                        path,
+                        (status, msg) =>
+                        {
+                            StatusMessage = $"⏳ [{i + 1}/{total}] {fileName}: {msg}";
+                        },
+                        CancellationToken.None).ConfigureAwait(false);
+
+                    Documents.Insert(0, doc);
+                    if (doc.Status == DocumentStatus.Completed)
+                    {
+                        successCount++;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    StatusMessage = $"⚠️ Error processing {fileName}: {ex.Message}";
                 }
             }
-            catch (Exception ex)
-            {
-                StatusMessage = $"⚠️ Error processing {fileName}: {ex.Message}";
-            }
-        }
 
-        StatusMessage = $"✅ Completed! Successfully ingested {successCount} of {total} document(s).";
-        await RefreshStatsAsync();
+            StatusMessage = $"✅ Completed! Successfully ingested {successCount} of {total} document(s).";
+            await RefreshStatsAsync().ConfigureAwait(false);
+        }).ConfigureAwait(false);
+
         IsProcessing = false;
     }
 
@@ -112,7 +116,7 @@ public partial class IngestionViewModel : ObservableObject
         try
         {
             var collectionName = _settingsService.CurrentSettings.CollectionName;
-            var (count, status) = await _vectorDbService.GetStatsAsync(collectionName, CancellationToken.None);
+            var (count, status) = await Task.Run(async () => await _vectorDbService.GetStatsAsync(collectionName, CancellationToken.None).ConfigureAwait(false)).ConfigureAwait(false);
             PointsCount = count;
             CollectionStatus = status;
         }

@@ -62,30 +62,49 @@ public partial class ChatViewModel : ObservableObject
 
         IsProcessing = true;
 
+        var dispatcher = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+
         try
         {
-            var (citations, stream) = await _ragPipelineService.ProcessQueryAsync(chatHistory, CancellationToken.None);
-            assistantMsg.Citations = citations;
-
-            await foreach (var token in stream.WithCancellation(CancellationToken.None))
+            await Task.Run(async () =>
             {
-                if (assistantMsg.IsThinking)
+                var (citations, stream) = await _ragPipelineService.ProcessQueryAsync(chatHistory, CancellationToken.None).ConfigureAwait(false);
+                
+                dispatcher?.TryEnqueue(() =>
                 {
-                    assistantMsg.IsThinking = false;
+                    assistantMsg.Citations = citations;
+                });
+
+                await foreach (var token in stream.WithCancellation(CancellationToken.None).ConfigureAwait(false))
+                {
+                    var t = token;
+                    dispatcher?.TryEnqueue(() =>
+                    {
+                        if (assistantMsg.IsThinking)
+                        {
+                            assistantMsg.IsThinking = false;
+                        }
+                        assistantMsg.Content += t;
+                    });
                 }
-                assistantMsg.Content += token;
-            }
+            }).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
-            assistantMsg.IsThinking = false;
-            assistantMsg.Content = $"⚠️ Error generating response: {ex.Message}";
+            dispatcher?.TryEnqueue(() =>
+            {
+                assistantMsg.IsThinking = false;
+                assistantMsg.Content = $"⚠️ Error generating response: {ex.Message}";
+            });
         }
         finally
         {
-            assistantMsg.IsThinking = false;
-            assistantMsg.IsStreaming = false;
-            IsProcessing = false;
+            dispatcher?.TryEnqueue(() =>
+            {
+                assistantMsg.IsThinking = false;
+                assistantMsg.IsStreaming = false;
+                IsProcessing = false;
+            });
         }
     }
 

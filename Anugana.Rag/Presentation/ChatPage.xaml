@@ -95,12 +95,12 @@
                              VerticalAlignment="Center" />
                 </StackPanel>
 
-                <!-- Markdown Formatted Message Body -->
-                <RichTextBlock local:MarkdownHelper.MarkdownText="{Binding Content}"
-                               TextWrapping="Wrap"
-                               FontSize="14"
-                               LineHeight="22"
-                               IsTextSelectionEnabled="True" />
+                <!-- Message Body (Markdown formatted TextBlock) -->
+                <TextBlock local:MarkdownHelper.MarkdownText="{Binding Content}"
+                           TextWrapping="Wrap"
+                           FontSize="14"
+                           IsTextSelectionEnabled="True"
+                           Foreground="{ThemeResource ApplicationForegroundThemeBrush}" />
 
                 <!-- Source Citations List -->
                 <ItemsControl ItemsSource="{Binding Citations}" Margin="0,8,0,0">

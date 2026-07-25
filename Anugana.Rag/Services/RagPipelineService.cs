@@ -47,7 +47,7 @@ public class RagPipelineService : IRagPipelineService
         {
             try
             {
-                var queryVector = await _embeddingService.GetEmbeddingAsync(lastUserMsg, cancellationToken);
+                var queryVector = await _embeddingService.GetEmbeddingAsync(lastUserMsg, cancellationToken).ConfigureAwait(false);
                 if (queryVector.Length > 0)
                 {
                     float effectiveThreshold = settings.ScoreThreshold <= 0.001f ? 0.30f : settings.ScoreThreshold;
@@ -58,7 +58,7 @@ public class RagPipelineService : IRagPipelineService
                         queryVector,
                         effectiveTopK,
                         effectiveThreshold,
-                        cancellationToken);
+                        cancellationToken).ConfigureAwait(false);
                 }
             }
             catch

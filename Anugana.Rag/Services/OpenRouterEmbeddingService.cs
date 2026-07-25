@@ -24,7 +24,7 @@ public class OpenRouterEmbeddingService : IEmbeddingService
     {
         try
         {
-            var batch = await GetEmbeddingsBatchAsync(new List<string> { text }, cancellationToken);
+            var batch = await GetEmbeddingsBatchAsync(new List<string> { text }, cancellationToken).ConfigureAwait(false);
             return batch.Count > 0 ? batch[0] : Array.Empty<float>();
         }
         catch
@@ -59,13 +59,13 @@ public class OpenRouterEmbeddingService : IEmbeddingService
 
             request.Content = new StringContent(payload, System.Text.Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.SendAsync(request, cancellationToken);
+            var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
             if (!response.IsSuccessStatusCode)
             {
                 return new List<float[]>();
             }
 
-            var json = await response.Content.ReadAsStringAsync(cancellationToken);
+            var json = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
             using var doc = JsonDocument.Parse(json);
 
             var result = new List<float[]>();

@@ -70,7 +70,7 @@ public class DocumentProcessorService : IDocumentProcessorService
             else if (doc.FileType == ".txt" || doc.FileType == ".md")
             {
                 doc.PageCount = 1;
-                string text = await File.ReadAllTextAsync(filePath, cancellationToken);
+                string text = await File.ReadAllTextAsync(filePath, cancellationToken).ConfigureAwait(false);
                 pageTexts.Add((1, text));
             }
             else
@@ -110,7 +110,7 @@ public class DocumentProcessorService : IDocumentProcessorService
             progressCallback?.Invoke(DocumentStatus.Embedding, $"Generating embeddings for {allChunks.Count} chunks...");
 
             var textsToEmbed = allChunks.Select(c => c.TextContent).ToList();
-            var embeddings = await _embeddingService.GetEmbeddingsBatchAsync(textsToEmbed, cancellationToken);
+            var embeddings = await _embeddingService.GetEmbeddingsBatchAsync(textsToEmbed, cancellationToken).ConfigureAwait(false);
 
             for (int i = 0; i < allChunks.Count && i < embeddings.Count; i++)
             {
@@ -120,7 +120,7 @@ public class DocumentProcessorService : IDocumentProcessorService
             doc.Status = DocumentStatus.Indexing;
             progressCallback?.Invoke(DocumentStatus.Indexing, "Indexing vectors into Vector Database...");
 
-            await _vectorDbService.UpsertChunksAsync(settings.CollectionName, allChunks, cancellationToken);
+            await _vectorDbService.UpsertChunksAsync(settings.CollectionName, allChunks, cancellationToken).ConfigureAwait(false);
 
             doc.Status = DocumentStatus.Completed;
             progressCallback?.Invoke(DocumentStatus.Completed, "Successfully processed and indexed.");
