@@ -207,9 +207,9 @@ jobs:
           name: Anugana.Rag-Android.aab
           path: ./publish/android-aab/*.aab
 
-  # ─── 4. Build WebAssembly Static Distribution & GitHub Pages ───────────────
+  # ─── 4. Build WebAssembly Static Distribution & VPS Deployment ────────────
   build-webassembly:
-    name: Build WebAssembly Web App & GitHub Pages
+    name: Build WebAssembly Web App & VPS Deployment
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -240,18 +240,38 @@ jobs:
           echo "=== WASM output directory ==="
           find ./publish/wasm -maxdepth 3 -type f | head -40 || true
 
-      - name: Fix Base Href & Enable GitHub Pages (.nojekyll)
-        run: |
-          touch ./publish/wasm/wwwroot/.nojekyll
-          sed -i 's|<base href="/" />|<base href="./" />|g' ./publish/wasm/wwwroot/index.html || true
-
-      - name: Deploy Live Web App to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Clean & prepare deploy target on VPS
+        uses: appleboy/ssh-action@v1.0.3
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v')
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./publish/wasm/wwwroot
-          force_orphan: true
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            sudo mkdir -p /var/www/anugana.avnishkumar.co.in
+            sudo rm -rf /var/www/anugana.avnishkumar.co.in/*
+            sudo chown -R $USER:$USER /var/www/anugana.avnishkumar.co.in
+
+      - name: Upload WASM files to VPS
+        uses: appleboy/scp-action@v0.1.7
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v')
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          source: "publish/wasm/wwwroot/**"
+          target: "/var/www/anugana.avnishkumar.co.in"
+          strip_components: 3
+
+      - name: Set permissions on VPS
+        uses: appleboy/ssh-action@v1.0.3
+        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v')) && always()
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            sudo chown -R www-data:www-data /var/www/anugana.avnishkumar.co.in
 
       - name: Zip WASM Output
         shell: bash
