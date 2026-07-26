@@ -59,6 +59,14 @@
     <PackageReference Include="Qdrant.Client" />
     <PackageReference Include="PdfPig" />
     <PackageReference Include="sqlite-net-pcl" />
+    <PackageReference Include="SQLitePCLRaw.bundle_green" />
+    <PackageReference Include="SQLitePCLRaw.core" />
+    <PackageReference Include="SQLitePCLRaw.provider.e_sqlite3" />
+    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3.android" />
   </ItemGroup>
 
   <!-- Windows MSIX store package icons (referenced by Package.appxmanifest) -->

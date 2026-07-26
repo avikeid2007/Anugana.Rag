@@ -9,5 +9,10 @@
     <PackageVersion Include="Qdrant.Client" Version="1.14.0" />
     <PackageVersion Include="PdfPig" Version="0.1.8" />
     <PackageVersion Include="sqlite-net-pcl" Version="1.9.172" />
+    <PackageVersion Include="SQLitePCLRaw.bundle_green" Version="2.1.10" />
+    <PackageVersion Include="SQLitePCLRaw.core" Version="2.1.10" />
+    <PackageVersion Include="SQLitePCLRaw.provider.e_sqlite3" Version="2.1.10" />
+    <PackageVersion Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.12" />
+    <PackageVersion Include="SQLitePCLRaw.lib.e_sqlite3.android" Version="2.1.12" />
   </ItemGroup>
 </Project>
