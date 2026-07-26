@@ -234,6 +234,9 @@ jobs:
           -p:TargetFrameworks=net10.0-browserwasm
           -o ./publish/wasm
 
+      - name: Ensure Read/Write Permissions on WASM Output
+        run: sudo chmod -R 777 ./publish/wasm
+
       - name: List WASM Output Directory (Diagnostics)
         shell: bash
         run: |
