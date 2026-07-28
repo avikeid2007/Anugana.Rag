@@ -1,0 +1,79 @@
+<Page x:Class="Anugana.Rag.Presentation.AboutPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:Anugana.Rag.Presentation"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+  <ScrollViewer IsTabStop="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto">
+    <StackPanel VerticalAlignment="Top" Spacing="16" Padding="16">
+
+      <!-- App Header Banner -->
+      <Border CornerRadius="12" Padding="20" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+        <StackPanel Spacing="6" HorizontalAlignment="Center">
+          <TextBlock Text="🤖" FontSize="44" HorizontalAlignment="Center" />
+          <TextBlock Text="{Binding AppName}" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" Foreground="{ThemeResource SystemControlHighlightAccentBrush}" />
+          <TextBlock Text="{Binding AppVersion}" FontSize="13" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" HorizontalAlignment="Center" />
+          <TextBlock Text="Cross-Platform Intelligence &amp; Document Search" FontSize="12" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" HorizontalAlignment="Center" />
+        </StackPanel>
+      </Border>
+
+      <!-- Overview Card -->
+      <Border CornerRadius="12" Padding="16" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+        <StackPanel Spacing="10">
+          <TextBlock Text="🌟 About the Application" FontWeight="SemiBold" FontSize="15" />
+          <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontSize="13" Foreground="{ThemeResource SystemControlPageTextBaseHighBrush}" LineHeight="20" />
+        </StackPanel>
+      </Border>
+
+      <!-- Key Features Card -->
+      <Border CornerRadius="12" Padding="16" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+        <StackPanel Spacing="10">
+          <TextBlock Text="⚡ Core Capabilities" FontWeight="SemiBold" FontSize="15" />
+          <StackPanel Spacing="6">
+            <TextBlock Text="• Qdrant Vector Database integration (gRPC + REST Fallback)" FontSize="13" />
+            <TextBlock Text="• OpenRouter &amp; Ollama Large Language Model inference" FontSize="13" />
+            <TextBlock Text="• Multi-format document parser (PDF, Markdown, TXT, JSON, C#)" FontSize="13" />
+            <TextBlock Text="• Intelligent text chunking with custom overlap settings" FontSize="13" />
+            <TextBlock Text="• Cross-platform UI for Android, Windows, iOS, and WebAssembly" FontSize="13" />
+          </StackPanel>
+        </StackPanel>
+      </Border>
+
+      <!-- Technology Stack & Architecture Card -->
+      <Border CornerRadius="12" Padding="16" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+        <StackPanel Spacing="10">
+          <TextBlock Text="🛠️ Technology Stack" FontWeight="SemiBold" FontSize="15" />
+          <TextBlock Text="{Binding TechnologyStack}" TextWrapping="Wrap" FontSize="13" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" />
+          
+          <Grid ColumnSpacing="12" RowSpacing="6" Margin="0,4,0,0">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Publisher:" FontWeight="SemiBold" FontSize="12" />
+            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Publisher}" FontSize="12" />
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="UI Engine:" FontWeight="SemiBold" FontSize="12" />
+            <TextBlock Grid.Row="1" Grid.Column="1" Text="Uno Platform / WinUI 3" FontSize="12" />
+          </Grid>
+        </StackPanel>
+      </Border>
+
+      <!-- Privacy & Copyright Footer -->
+      <Border CornerRadius="12" Padding="16" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+        <StackPanel Spacing="8" HorizontalAlignment="Center">
+          <TextBlock Text="🔒 Privacy-First Design" FontWeight="SemiBold" FontSize="13" HorizontalAlignment="Center" />
+          <TextBlock Text="Your API keys, document embeddings, and configuration databases remain strictly on your local device." TextWrapping="Wrap" FontSize="12" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" HorizontalAlignment="Center" TextAlignment="Center" />
+          <TextBlock Text="© 2026 Anugana RAG Systems. All rights reserved." FontSize="11" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" HorizontalAlignment="Center" Margin="0,6,0,0" />
+        </StackPanel>
+      </Border>
+
+    </StackPanel>
+  </ScrollViewer>
+</Page>

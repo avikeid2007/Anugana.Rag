@@ -10,7 +10,7 @@
     <local:BoolToVisibilityConverter x:Key="BoolToVis" />
   </Page.Resources>
 
-  <Grid utu:SafeArea.Insets="SoftInput, VisibleBounds" RowSpacing="10" Padding="12,12,12,8">
+  <Grid RowSpacing="10" Padding="12,12,12,8">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />

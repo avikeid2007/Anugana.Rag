@@ -86,6 +86,7 @@ public partial class App : Application
                     services.AddSingleton<Presentation.ChatViewModel>();
                     services.AddSingleton<Presentation.IngestionViewModel>();
                     services.AddSingleton<Presentation.SettingsViewModel>();
+                    services.AddSingleton<Presentation.AboutViewModel>();
                     services.AddSingleton<Presentation.MainViewModel>();
                 })
                 .UseNavigation(RegisterRoutes)
@@ -108,6 +109,7 @@ public partial class App : Application
             new ViewMap<Presentation.ChatPage, Presentation.ChatViewModel>(),
             new ViewMap<Presentation.IngestionPage, Presentation.IngestionViewModel>(),
             new ViewMap<Presentation.SettingsPage, Presentation.SettingsViewModel>(),
+            new ViewMap<Presentation.AboutPage, Presentation.AboutViewModel>(),
             new DataViewMap<SecondPage, SecondViewModel, Entity>()
         );
 

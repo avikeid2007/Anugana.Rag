@@ -11,7 +11,7 @@
   </Page.Resources>
 
   <ScrollViewer IsTabStop="True">
-    <Grid utu:SafeArea.Insets="VisibleBounds" RowSpacing="14" Padding="14">
+    <Grid RowSpacing="14" Padding="14">
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto" />
         <RowDefinition Height="Auto" />

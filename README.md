@@ -6,7 +6,13 @@
   <p>Powered by <b>Uno Platform</b>, <b>.NET 10</b>, <b>Qdrant Vector Database</b>, and <b>OpenRouter AI</b>.</p>
 
   <p>
-    <a href="https://github.com/avikeid2007/Anugana/actions"><img src="https://img.shields.io/github/actions/workflow/status/avikeid2007/Anugana/release.yml?style=for-the-badge&amp;logo=github&amp;label=Build%20Status" alt="Build Status" /></a>
+    <a href="https://anugana.avnishkumar.co.in/"><img src="https://img.shields.io/badge/Web_App-Live_Demo-blue?style=for-the-badge&amp;logo=googlechrome" alt="Web App" /></a>
+    <a href="https://apps.microsoft.com/detail/9ngvqppkhf5p"><img src="https://img.shields.io/badge/Microsoft_Store-Get_it-0078D4?style=for-the-badge&amp;logo=microsoftstore" alt="Microsoft Store" /></a>
+    <a href="https://play.google.com/store/apps/details?id=com.avnishkumar.Anugana"><img src="https://img.shields.io/badge/Google_Play-Get_it-34A853?style=for-the-badge&amp;logo=googleplay" alt="Google Play" /></a>
+  </p>
+
+  <p>
+    <a href="https://github.com/avikeid2007/Anugana.Rag/actions"><img src="https://img.shields.io/github/actions/workflow/status/avikeid2007/Anugana.Rag/release.yml?style=for-the-badge&amp;logo=github&amp;label=Build%20Status" alt="Build Status" /></a>
     <a href="https://platform.uno"><img src="https://img.shields.io/badge/Uno%20Platform-5.0+-7A67F8?style=for-the-badge&amp;logo=uno-platform" alt="Uno Platform" /></a>
     <a href="https://dotnet.microsoft.com/"><img src="https://img.shields.io/badge/.NET-10.0-512BD4?style=for-the-badge&amp;logo=dotnet" alt=".NET 10" /></a>
     <a href="https://qdrant.tech"><img src="https://img.shields.io/badge/Vector%20DB-Qdrant-D62B00?style=for-the-badge&amp;logo=qdrant" alt="Qdrant" /></a>
@@ -123,8 +129,8 @@ Anugana.Rag features an intuitive 3-tab navigation bar at the bottom:
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/avikeid2007/Anugana.git
-   cd Anugana/Anugana.Rag
+   git clone https://github.com/avikeid2007/Anugana.Rag.git
+   cd Anugana.Rag
    ```
 
 2. **Run Desktop App**:
@@ -139,16 +145,18 @@ Anugana.Rag features an intuitive 3-tab navigation bar at the bottom:
 
 ---
 
-## 📦 Downloads & Releases
+## 📦 Downloads & Live Links
 
-GitHub Actions automatically builds and publishes native binaries for every release:
+Access Anugana.Rag via live web demo, official app stores, or direct GitHub release binaries:
 
-| Platform | Download Artifact | Description |
+| Platform | Link / Download | Description |
 |---|---|---|
-| 🪟 **Windows Executable** | `Anugana.Rag-Windows-Standalone.exe` | Standalone single-file executable (no installation required). |
-| 🪟 **Windows MSIX Setup** | `Anugana.Rag-Windows-Setup.msix` | Native Windows App Installer package. |
-| 📱 **Android App** | `Anugana.Rag-Android.apk` | Native Android APK installer package. |
-| 🌐 **WebAssembly Web Distribution** | `Anugana.Rag-WebAssembly.zip` | Static WebAssembly web distribution package. |
+| 🌐 **Web App** | [anugana.avnishkumar.co.in](https://anugana.avnishkumar.co.in/) | Run directly in browser via WebAssembly (No install needed). |
+| 🪟 **Microsoft Store** | [Get on Microsoft Store](https://apps.microsoft.com/detail/9ngvqppkhf5p) | Official Windows Store app package. |
+| 📱 **Google Play Store** | [Get on Google Play](https://play.google.com/store/apps/details?id=com.avnishkumar.Anugana) | Official Android app from Google Play. |
+| 🪟 **Windows Standalone** | `Anugana.Rag-Windows-Standalone.exe` | Portable single-file executable from GitHub Releases. |
+| 🪟 **Windows MSIX** | `Anugana.Rag-Windows-Setup.msix` | Native Windows installer package from GitHub Releases. |
+| 📱 **Android APK** | `Anugana.Rag-Android.apk` | Direct Android APK package from GitHub Releases. |
 
 ---
 

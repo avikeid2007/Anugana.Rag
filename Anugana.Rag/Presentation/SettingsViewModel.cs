@@ -50,6 +50,13 @@ public partial class SettingsViewModel : ObservableObject
     [RelayCommand]
     private void SaveSettings()
     {
+        if (Settings != null)
+        {
+            Settings.QdrantApiKey = Settings.QdrantApiKey?.Trim() ?? string.Empty;
+            Settings.OpenRouterApiKey = Settings.OpenRouterApiKey?.Trim() ?? string.Empty;
+            Settings.QdrantEndpoint = Settings.QdrantEndpoint?.Trim() ?? string.Empty;
+            Settings.OpenRouterBaseUrl = Settings.OpenRouterBaseUrl?.Trim() ?? string.Empty;
+        }
         _settingsService.SaveSettings(Settings);
         ThemeHelper.ApplyTheme(Settings.Theme);
     }
@@ -68,5 +75,66 @@ public partial class SettingsViewModel : ObservableObject
         LlmConnectionStatus = "Testing connection...";
         bool ok = await Task.Run(async () => await _llmService.TestConnectionAsync(cancellationToken).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
         LlmConnectionStatus = ok ? "✅ Connection Successful!" : "❌ Connection Failed.";
+    }
+
+    [RelayCommand]
+    private async Task PasteQdrantEndpointAsync()
+    {
+        var text = await GetClipboardTextAsync();
+        if (!string.IsNullOrWhiteSpace(text))
+        {
+            Settings.QdrantEndpoint = text.Trim();
+            OnPropertyChanged(nameof(Settings));
+        }
+    }
+
+    [RelayCommand]
+    private async Task PasteQdrantApiKeyAsync()
+    {
+        var text = await GetClipboardTextAsync();
+        if (!string.IsNullOrWhiteSpace(text))
+        {
+            Settings.QdrantApiKey = text.Trim();
+            OnPropertyChanged(nameof(Settings));
+        }
+    }
+
+    [RelayCommand]
+    private async Task PasteOpenRouterApiKeyAsync()
+    {
+        var text = await GetClipboardTextAsync();
+        if (!string.IsNullOrWhiteSpace(text))
+        {
+            Settings.OpenRouterApiKey = text.Trim();
+            OnPropertyChanged(nameof(Settings));
+        }
+    }
+
+    [RelayCommand]
+    private async Task PasteOpenRouterBaseUrlAsync()
+    {
+        var text = await GetClipboardTextAsync();
+        if (!string.IsNullOrWhiteSpace(text))
+        {
+            Settings.OpenRouterBaseUrl = text.Trim();
+            OnPropertyChanged(nameof(Settings));
+        }
+    }
+
+    private static async Task<string?> GetClipboardTextAsync()
+    {
+        try
+        {
+            var content = Windows.ApplicationModel.DataTransfer.Clipboard.GetContent();
+            if (content != null && content.Contains(Windows.ApplicationModel.DataTransfer.StandardDataFormats.Text))
+            {
+                return await content.GetTextAsync();
+            }
+        }
+        catch
+        {
+            // Clipboard unavailable or empty
+        }
+        return null;
     }
 }

@@ -50,7 +50,7 @@ public class QdrantVectorDbService : IVectorDbService
             url = $"{scheme}://{url}";
         }
 
-        var apiKey = string.IsNullOrWhiteSpace(settings.QdrantApiKey) ? null : settings.QdrantApiKey;
+        var apiKey = string.IsNullOrWhiteSpace(settings.QdrantApiKey) ? null : settings.QdrantApiKey.Trim();
 
         if (Uri.TryCreate(url, UriKind.Absolute, out var uri))
         {
@@ -93,7 +93,7 @@ public class QdrantVectorDbService : IVectorDbService
 
     private void AddApiKeyHeader(HttpRequestMessage req)
     {
-        var apiKey = _settingsService.CurrentSettings.QdrantApiKey;
+        var apiKey = _settingsService.CurrentSettings.QdrantApiKey?.Trim();
         if (!string.IsNullOrWhiteSpace(apiKey)) req.Headers.Add("api-key", apiKey);
     }
 

@@ -5,25 +5,17 @@
       xmlns:utu="using:Uno.Toolkit.UI"
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-  <ScrollViewer IsTabStop="True">
-    <Grid utu:SafeArea.Insets="VisibleBounds" RowSpacing="14" Padding="14">
-      <Grid.RowDefinitions>
-        <RowDefinition Height="Auto" />
-        <RowDefinition Height="Auto" />
-        <RowDefinition Height="Auto" />
-        <RowDefinition Height="Auto" />
-        <RowDefinition Height="Auto" />
-        <RowDefinition Height="Auto" />
-      </Grid.RowDefinitions>
+  <ScrollViewer IsTabStop="True" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto">
+    <StackPanel VerticalAlignment="Top" Spacing="14" Padding="14">
 
       <!-- Header -->
-      <StackPanel Grid.Row="0">
+      <StackPanel>
         <TextBlock Text="⚙️ RAG System Settings" FontSize="20" FontWeight="Bold" />
         <TextBlock Text="Configure Theme, Vector Database, AI Providers, Models, and Search Parameters" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" FontSize="12" />
       </StackPanel>
 
       <!-- App Theme / Appearance Configuration -->
-      <Border Grid.Row="1" CornerRadius="12" Padding="16" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+      <Border CornerRadius="12" Padding="16" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
         <StackPanel Spacing="10">
           <TextBlock Text="App Theme &amp; Appearance" FontWeight="SemiBold" FontSize="15" />
           <TextBlock Text="Choose your preferred color theme for mobile and desktop displays." Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" FontSize="12" />
@@ -54,12 +46,28 @@
       </Border>
 
       <!-- Vector DB Configuration -->
-      <Border Grid.Row="2" CornerRadius="12" Padding="16" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+      <Border CornerRadius="12" Padding="16" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
         <StackPanel Spacing="10">
           <TextBlock Text="Vector Database Setup (Qdrant / REST)" FontWeight="SemiBold" FontSize="15" />
           
-          <TextBox Header="Qdrant Endpoint URL" Text="{Binding Settings.QdrantEndpoint, Mode=TwoWay}" PlaceholderText="http://localhost:6334" CornerRadius="6" />
-          <PasswordBox Header="Qdrant API Key (Optional)" Password="{Binding Settings.QdrantApiKey, Mode=TwoWay}" CornerRadius="6" />
+          <Grid ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0" Header="Qdrant Endpoint URL" Text="{Binding Settings.QdrantEndpoint, Mode=TwoWay}" PlaceholderText="http://localhost:6334" CornerRadius="6" />
+            <Button Grid.Column="1" Content="📋 Paste" Command="{Binding PasteQdrantEndpointCommand}" VerticalAlignment="Bottom" CornerRadius="6" Padding="12,8" />
+          </Grid>
+
+          <Grid ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0" Header="Qdrant API Key (Optional)" Text="{Binding Settings.QdrantApiKey, Mode=TwoWay}" PlaceholderText="Enter Qdrant API Key" IsSpellCheckEnabled="False" IsTextPredictionEnabled="False" CornerRadius="6" />
+            <Button Grid.Column="1" Content="📋 Paste" Command="{Binding PasteQdrantApiKeyCommand}" VerticalAlignment="Bottom" CornerRadius="6" Padding="12,8" />
+          </Grid>
+
           <TextBox Header="Collection Name" Text="{Binding Settings.CollectionName, Mode=TwoWay}" CornerRadius="6" />
 
           <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,4,0,0">
@@ -70,12 +78,28 @@
       </Border>
 
       <!-- AI Provider & OpenRouter Configuration -->
-      <Border Grid.Row="3" CornerRadius="12" Padding="16" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+      <Border CornerRadius="12" Padding="16" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
         <StackPanel Spacing="10">
           <TextBlock Text="AI Provider Setup (OpenRouter / Ollama)" FontWeight="SemiBold" FontSize="15" />
           
-          <PasswordBox Header="OpenRouter API Key" Password="{Binding Settings.OpenRouterApiKey, Mode=TwoWay}" CornerRadius="6" />
-          <TextBox Header="Base Endpoint URL" Text="{Binding Settings.OpenRouterBaseUrl, Mode=TwoWay}" CornerRadius="6" />
+          <Grid ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0" Header="OpenRouter API Key" Text="{Binding Settings.OpenRouterApiKey, Mode=TwoWay}" PlaceholderText="sk-or-v1-..." IsSpellCheckEnabled="False" IsTextPredictionEnabled="False" CornerRadius="6" />
+            <Button Grid.Column="1" Content="📋 Paste" Command="{Binding PasteOpenRouterApiKeyCommand}" VerticalAlignment="Bottom" CornerRadius="6" Padding="12,8" />
+          </Grid>
+
+          <Grid ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0" Header="Base Endpoint URL" Text="{Binding Settings.OpenRouterBaseUrl, Mode=TwoWay}" CornerRadius="6" />
+            <Button Grid.Column="1" Content="📋 Paste" Command="{Binding PasteOpenRouterBaseUrlCommand}" VerticalAlignment="Bottom" CornerRadius="6" Padding="12,8" />
+          </Grid>
+
           <TextBox Header="Chat Model ID" Text="{Binding Settings.ChatModel, Mode=TwoWay}" PlaceholderText="meta-llama/llama-3.3-70b-instruct" CornerRadius="6" />
           <TextBox Header="Embedding Model ID" Text="{Binding Settings.EmbeddingModel, Mode=TwoWay}" PlaceholderText="openai/text-embedding-3-small" CornerRadius="6" />
 
@@ -87,7 +111,7 @@
       </Border>
 
       <!-- RAG Search Parameters (Mobile Responsive 2x2 Grid) -->
-      <Border Grid.Row="4" CornerRadius="12" Padding="16" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+      <Border CornerRadius="12" Padding="16" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
         <StackPanel Spacing="10">
           <TextBlock Text="RAG Search Parameters" FontWeight="SemiBold" FontSize="15" />
 
@@ -112,8 +136,66 @@
       </Border>
 
       <!-- Save Settings Button -->
-      <Button Grid.Row="5" Content="💾 Save Settings" Command="{Binding SaveSettingsCommand}" Background="{ThemeResource SystemControlHighlightAccentBrush}" Foreground="White" FontWeight="SemiBold" HorizontalAlignment="Stretch" Padding="0,12" CornerRadius="8" />
+      <Button Content="💾 Save Settings" Command="{Binding SaveSettingsCommand}" Background="{ThemeResource SystemControlHighlightAccentBrush}" Foreground="White" FontWeight="SemiBold" HorizontalAlignment="Stretch" Padding="0,12" CornerRadius="8" />
 
-    </Grid>
+      <!-- About App & System Info Card -->
+      <Border CornerRadius="12" Padding="16" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+        <StackPanel Spacing="10">
+          <TextBlock Text="App Information &amp; System" FontWeight="SemiBold" FontSize="15" />
+          <TextBlock Text="View application specifications, tech stack, version details, and privacy commitments." Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" FontSize="12" />
+
+          <Button Content="ℹ️ About Anugana AI RAG" Click="OpenAboutDialog_Click" HorizontalAlignment="Stretch" Padding="0,10" CornerRadius="6" />
+        </StackPanel>
+      </Border>
+
+      <!-- About ContentDialog -->
+      <ContentDialog x:Name="AboutDialog"
+                     Title="About Anugana AI RAG"
+                     CloseButtonText="Close"
+                     DefaultButton="Close"
+                     CornerRadius="12">
+        <ScrollViewer MaxHeight="450">
+          <StackPanel Spacing="14" Padding="4">
+            <StackPanel HorizontalAlignment="Center" Spacing="4">
+              <TextBlock Text="🤖 Anugana AI" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" Foreground="{ThemeResource SystemControlHighlightAccentBrush}" />
+              <TextBlock Text="Retrieval-Augmented Generation Assistant" FontSize="13" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" HorizontalAlignment="Center" />
+              <TextBlock Text="Version 1.0.0 • Powered by Uno Platform &amp; .NET 10" FontSize="11" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" HorizontalAlignment="Center" />
+            </StackPanel>
+
+            <Border Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" Padding="12" CornerRadius="8">
+              <StackPanel Spacing="6">
+                <TextBlock Text="🌟 Overview" FontWeight="SemiBold" FontSize="13" />
+                <TextBlock Text="Anugana AI RAG is a fast, cross-platform intelligent document assistant. It indexes your documents using vector embeddings and uses OpenRouter / Ollama LLMs to deliver accurate context-aware responses." TextWrapping="Wrap" FontSize="12" />
+              </StackPanel>
+            </Border>
+
+            <Border Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" Padding="12" CornerRadius="8">
+              <StackPanel Spacing="6">
+                <TextBlock Text="⚙️ Technology Stack" FontWeight="SemiBold" FontSize="13" />
+                <TextBlock Text="• Framework: .NET 10 &amp; Uno Platform (Multi-Target)" FontSize="12" />
+                <TextBlock Text="• Vector Engine: Qdrant DB (gRPC / REST Fallback)" FontSize="12" />
+                <TextBlock Text="• AI Integration: OpenRouter &amp; Ollama API" FontSize="12" />
+                <TextBlock Text="• Local Storage: SQLite-net-PCL" FontSize="12" />
+                <TextBlock Text="• Document Parser: PdfPig &amp; Custom Plaintext Chunkers" FontSize="12" />
+              </StackPanel>
+            </Border>
+
+            <Border Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" Padding="12" CornerRadius="8">
+              <StackPanel Spacing="6">
+                <TextBlock Text="🔒 Privacy &amp; Data Security" FontWeight="SemiBold" FontSize="13" />
+                <TextBlock Text="• Document embeddings &amp; app settings are stored locally on your device in an encrypted SQLite database." TextWrapping="Wrap" FontSize="12" />
+                <TextBlock Text="• API keys are never transmitted to third parties other than your configured OpenRouter/Qdrant endpoints." TextWrapping="Wrap" FontSize="12" />
+              </StackPanel>
+            </Border>
+
+            <StackPanel HorizontalAlignment="Center" Spacing="4">
+              <TextBlock Text="Designed &amp; Developed by Avnish" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" />
+              <TextBlock Text="© 2026 Anugana RAG Systems. All rights reserved." FontSize="11" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" HorizontalAlignment="Center" />
+            </StackPanel>
+          </StackPanel>
+        </ScrollViewer>
+      </ContentDialog>
+
+    </StackPanel>
   </ScrollViewer>
 </Page>

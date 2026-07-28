@@ -29,9 +29,10 @@ public class OpenRouterLlmService : ILlmService
             var settings = _settingsService.CurrentSettings;
             var url = $"{settings.OpenRouterBaseUrl.TrimEnd('/')}/models";
             using var request = new HttpRequestMessage(HttpMethod.Get, url);
-            if (!string.IsNullOrWhiteSpace(settings.OpenRouterApiKey))
+            var apiKey = settings.OpenRouterApiKey?.Trim();
+            if (!string.IsNullOrWhiteSpace(apiKey))
             {
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", settings.OpenRouterApiKey);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
             }
             var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
             return response.IsSuccessStatusCode;
@@ -51,9 +52,10 @@ public class OpenRouterLlmService : ILlmService
         var url = $"{settings.OpenRouterBaseUrl.TrimEnd('/')}/chat/completions";
 
         using var request = new HttpRequestMessage(HttpMethod.Post, url);
-        if (!string.IsNullOrWhiteSpace(settings.OpenRouterApiKey))
+        var apiKey = settings.OpenRouterApiKey?.Trim();
+        if (!string.IsNullOrWhiteSpace(apiKey))
         {
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", settings.OpenRouterApiKey);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
         }
         request.Headers.Add("HTTP-Referer", "https://anugana.rag");
         request.Headers.Add("X-Title", "Anugana.Rag");

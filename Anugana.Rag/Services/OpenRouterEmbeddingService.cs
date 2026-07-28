@@ -44,9 +44,10 @@ public class OpenRouterEmbeddingService : IEmbeddingService
             var url = $"{baseUrl}/embeddings";
 
             using var request = new HttpRequestMessage(HttpMethod.Post, url);
-            if (!string.IsNullOrWhiteSpace(settings.OpenRouterApiKey))
+            var apiKey = settings.OpenRouterApiKey?.Trim();
+            if (!string.IsNullOrWhiteSpace(apiKey))
             {
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", settings.OpenRouterApiKey);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
             }
             request.Headers.Add("HTTP-Referer", "https://anugana.rag");
             request.Headers.Add("X-Title", "Anugana.Rag");
