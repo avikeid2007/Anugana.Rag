@@ -159,7 +159,7 @@
             <StackPanel HorizontalAlignment="Center" Spacing="4">
               <TextBlock Text="🤖 Anugana AI" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center" Foreground="{ThemeResource SystemControlHighlightAccentBrush}" />
               <TextBlock Text="Retrieval-Augmented Generation Assistant" FontSize="13" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" HorizontalAlignment="Center" />
-              <TextBlock Text="Version 1.0.0 • Powered by Uno Platform &amp; .NET 10" FontSize="11" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" HorizontalAlignment="Center" />
+              <TextBlock Text="Version 1.1.0 • Powered by Uno Platform &amp; .NET 10" FontSize="11" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" HorizontalAlignment="Center" />
             </StackPanel>
 
             <Border Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}" Padding="12" CornerRadius="8">
