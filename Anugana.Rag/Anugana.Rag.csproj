@@ -55,6 +55,14 @@
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
   </PropertyGroup>
 
+  <!-- Android 16 KB Memory Page Size & 64-bit ABI Alignment for Google Play Store -->
+  <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+    <AndroidSupportedAbis>arm64-v8a;x86_64</AndroidSupportedAbis>
+    <AndroidEnable16KbPageSize>true</AndroidEnable16KbPageSize>
+    <AndroidEnablePageSizeCompatibility>true</AndroidEnablePageSizeCompatibility>
+    <AndroidExtraLdFlags>-z max-page-size=16384</AndroidExtraLdFlags>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Qdrant.Client" />
     <PackageReference Include="PdfPig" />
