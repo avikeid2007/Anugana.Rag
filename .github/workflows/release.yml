@@ -99,9 +99,6 @@ jobs:
               -f net10.0-android \
               -c Release \
               -p:TargetFrameworks=net10.0-android \
-              -p:AndroidSupportedAbis="arm64-v8a;x86_64" \
-              -p:AndroidEnable16KbPageSize=true \
-              -p:AndroidEnablePageSizeCompatibility=true \
               -p:AndroidPackageFormat=apk \
               -p:AndroidKeyStore=true \
               -p:AndroidSigningKeyStore=${{ github.workspace }}/release.keystore \
@@ -114,9 +111,6 @@ jobs:
               -f net10.0-android \
               -c Release \
               -p:TargetFrameworks=net10.0-android \
-              -p:AndroidSupportedAbis="arm64-v8a;x86_64" \
-              -p:AndroidEnable16KbPageSize=true \
-              -p:AndroidEnablePageSizeCompatibility=true \
               -p:AndroidPackageFormat=apk \
               -o ./publish/android-apk
           fi
@@ -128,9 +122,6 @@ jobs:
               -f net10.0-android \
               -c Release \
               -p:TargetFrameworks=net10.0-android \
-              -p:AndroidSupportedAbis="arm64-v8a;x86_64" \
-              -p:AndroidEnable16KbPageSize=true \
-              -p:AndroidEnablePageSizeCompatibility=true \
               -p:AndroidPackageFormat=aab \
               -p:AndroidKeyStore=true \
               -p:AndroidSigningKeyStore=${{ github.workspace }}/release.keystore \
@@ -143,9 +134,6 @@ jobs:
               -f net10.0-android \
               -c Release \
               -p:TargetFrameworks=net10.0-android \
-              -p:AndroidSupportedAbis="arm64-v8a;x86_64" \
-              -p:AndroidEnable16KbPageSize=true \
-              -p:AndroidEnablePageSizeCompatibility=true \
               -p:AndroidPackageFormat=aab \
               -o ./publish/android-aab
           fi
