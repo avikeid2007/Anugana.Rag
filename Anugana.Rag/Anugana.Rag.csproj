@@ -10,8 +10,8 @@
     <!-- App Identifier -->
     <ApplicationId>com.avnishkumar.Anugana</ApplicationId>
     <!-- Versions -->
-    <ApplicationDisplayVersion>1.1</ApplicationDisplayVersion>
-    <ApplicationVersion>2</ApplicationVersion>
+    <ApplicationDisplayVersion>1.2</ApplicationDisplayVersion>
+    <ApplicationVersion>3</ApplicationVersion>
     <!-- Package Publisher -->
     <ApplicationPublisher>Avnish</ApplicationPublisher>
     <!-- Package Description -->
