@@ -82,6 +82,11 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Setup Android NDK r28
+        uses: nsetup/setup-ndk@v1
+        with:
+          ndk-version: r28
+
       - name: Install Android Workload
         run: |
           dotnet workload install android
