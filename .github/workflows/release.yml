@@ -82,10 +82,19 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Android NDK r28
-        uses: nsetup/setup-ndk@v1
-        with:
-          ndk-version: r28
+      - name: Configure Android NDK
+        run: |
+          PREINSTALLED_NDK=$(find $ANDROID_HOME/ndk -maxdepth 1 -mindepth 1 -type d 2>/dev/null | sort -V | tail -n 1)
+          if [ -n "$PREINSTALLED_NDK" ]; then
+            echo "Found pre-installed NDK at: $PREINSTALLED_NDK"
+            echo "ANDROID_NDK_HOME=$PREINSTALLED_NDK" >> $GITHUB_ENV
+            echo "ANDROID_NDK_ROOT=$PREINSTALLED_NDK" >> $GITHUB_ENV
+          else
+            echo "Installing NDK r28 via sdkmanager..."
+            yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;28.0.12433547"
+            echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/28.0.12433547" >> $GITHUB_ENV
+            echo "ANDROID_NDK_ROOT=$ANDROID_HOME/ndk/28.0.12433547" >> $GITHUB_ENV
+          fi
 
       - name: Install Android Workload
         run: |
